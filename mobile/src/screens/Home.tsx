@@ -2,7 +2,7 @@ import { View, Text, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
-  const navigation:any = useNavigation();
+  const navigation: any = useNavigation();
 
   return (
     <View
@@ -12,8 +12,21 @@ export default function Home() {
         alignItems: "center",
       }}
     >
-        <Button title="Login" onPress={()=>{navigation.navigate("login")}}/>
+      <Button
+        title="Login"
+        onPress={() => {
+          navigation.navigate("login");
+        }}
+      />
       <Text>Home</Text>
+      <Text
+        onPress={() => {
+          navigation.navigate("register");
+        }}
+        style={{ color: "blue" }}
+      >
+        Don't have an account? Click here to sign up.
+      </Text>
     </View>
   );
 }
