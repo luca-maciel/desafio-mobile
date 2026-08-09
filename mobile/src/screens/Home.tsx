@@ -19,14 +19,7 @@ export default function Home() {
         }}
       />
       <Text>Home</Text>
-      <Text
-        onPress={() => {
-          navigation.navigate("register");
-        }}
-        style={{ color: "blue" }}
-      >
-        Don't have an account? Click here to sign up.
-      </Text>
+      
     </View>
   );
 }

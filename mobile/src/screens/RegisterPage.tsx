@@ -1,4 +1,11 @@
-import { View, Text, TextInput, Button } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 
@@ -6,26 +13,41 @@ type FormErrors = {
   name?: string[];
   email?: string[];
   password?: string[];
+  confirmPassword?: string[];
 };
 
 export default function RegisterPage() {
   const navigation: any = useNavigation();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleRegister = async () => {
-    // Limpa os erros anteriores
     setErrors({});
+    setServerError("");
     setLoading(true);
+
+    if (password !== confirmPassword) {
+      setErrors({
+        confirmPassword: ["Passwords do not match"],
+      });
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+
+      return;
+    }
 
     try {
       const response = await fetch(
-        // sempre apontar para o ip da api
         "http://192.168.137.178:8080/auth/register",
         {
           method: "POST",
@@ -34,8 +56,8 @@ export default function RegisterPage() {
           },
           body: JSON.stringify({
             name,
-            email,
-            password,
+            email: email.trim().toLowerCase(),
+            password: password.trim(),
           }),
         },
       );
@@ -44,24 +66,28 @@ export default function RegisterPage() {
 
       if (!response.ok) {
         setLoading(false);
+
         if (data.details) {
           const newErrors: FormErrors = {};
 
-          data.details.forEach((error: { field: string; message: string }) => {
-            const field = error.field as keyof FormErrors;
+          data.details.forEach(
+            (error: { field: string; message: string }) => {
+              const field = error.field as keyof FormErrors;
 
-            if (!newErrors[field]) {
-              newErrors[field] = [];
-            }
+              if (!newErrors[field]) {
+                newErrors[field] = [];
+              }
 
-            newErrors[field]!.push(error.message);
-          });
+              newErrors[field]!.push(error.message);
+            },
+          );
 
           setErrors(newErrors);
         }
 
         return;
       }
+
       console.log("user created - ", data);
 
       setSuccessMessage(true);
@@ -73,138 +99,271 @@ export default function RegisterPage() {
       console.error(
         "error when try to connect to api",
         error,
-        "\nVerificar o ip da api",
+        "\nCheck the API IP address",
       );
-    } finally{
-        setLoading(false);
+
+      setServerError("Unable to connect to the server.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        padding: 20,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 24,
-          fontWeight: "bold",
-          marginBottom: 30,
-          textAlign: "center",
-        }}
-      >
-        Input your data
-      </Text>
-      {successMessage && (
-        <View
-          style={{
-            backgroundColor: "#dcfce7",
-            padding: 15,
-            borderRadius: 8,
-            marginBottom: 20,
-            width: "100%",
-          }}
+    <View style={styles.container}>
+      <View style={styles.form}>
+        <Text style={styles.title}>Create account</Text>
+
+        <Text style={styles.subtitle}>
+          Fill in your details to create your account
+        </Text>
+
+        {successMessage && (
+          <View style={styles.successContainer}>
+            <Text style={styles.successText}>
+              ✓ Account created successfully!
+            </Text>
+          </View>
+        )}
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Name</Text>
+
+          <TextInput
+            placeholder="Your name"
+            placeholderTextColor="#9ca3af"
+            value={name}
+            onChangeText={setName}
+            style={[
+              styles.input,
+              errors.name && styles.inputError,
+            ]}
+          />
+
+          {errors.name?.map((error, index) => (
+            <Text key={index} style={styles.errorText}>
+              • {error}
+            </Text>
+          ))}
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email</Text>
+
+          <TextInput
+            placeholder="your@email.com"
+            placeholderTextColor="#9ca3af"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            style={[
+              styles.input,
+              errors.email && styles.inputError,
+            ]}
+          />
+
+          {errors.email?.map((error, index) => (
+            <Text key={index} style={styles.errorText}>
+              • {error}
+            </Text>
+          ))}
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Password</Text>
+
+          <TextInput
+            placeholder="Enter your password"
+            placeholderTextColor="#9ca3af"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            style={[
+              styles.input,
+              errors.password && styles.inputError,
+            ]}
+          />
+
+          {errors.password?.map((error, index) => (
+            <Text key={index} style={styles.errorText}>
+              • {error}
+            </Text>
+          ))}
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Confirm password</Text>
+
+          <TextInput
+            placeholder="Enter your password again"
+            placeholderTextColor="#9ca3af"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            style={[
+              styles.input,
+              errors.confirmPassword && styles.inputError,
+            ]}
+          />
+
+          {errors.confirmPassword?.map((error, index) => (
+            <Text key={index} style={styles.errorText}>
+              • {error}
+            </Text>
+          ))}
+        </View>
+
+        {serverError && (
+          <Text style={styles.serverError}>
+            {serverError}
+          </Text>
+        )}
+
+        <TouchableOpacity
+          style={[
+            styles.registerButton,
+            loading && styles.buttonDisabled,
+          ]}
+          onPress={handleRegister}
+          disabled={loading}
         >
-          <Text
-            style={{
-              color: "#166534",
-              textAlign: "center",
-              fontWeight: "bold",
+          <Text style={styles.registerButtonText}>
+            {loading ? "Creating account..." : "Create account"}
+          </Text>
+        </TouchableOpacity>
+
+        <View style={styles.loginContainer}>
+          <Text style={styles.loginText}>
+            Already have an account?
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Login");
             }}
           >
-            ✓ Conta criada com sucesso!
-          </Text>
+            <Text style={styles.loginLink}>
+              Sign in
+            </Text>
+          </TouchableOpacity>
         </View>
-      )}
-      <TextInput
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-        style={{
-          borderWidth: 1,
-          borderColor: errors.name ? "#ef4444" : "#ccc",
-          borderRadius: 8,
-          padding: 12,
-          marginBottom: 5,
-        }}
-      />
-
-      {errors.name?.map((error, index) => (
-        <Text
-          key={index}
-          style={{
-            color: "#ef4444",
-            fontSize: 12,
-            marginBottom: 3,
-          }}
-        >
-          • {error}
-        </Text>
-      ))}
-
-      <TextInput
-        placeholder="E-mail"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        style={{
-          borderWidth: 1,
-          borderColor: errors.email ? "#ef4444" : "#ccc",
-          borderRadius: 8,
-          padding: 12,
-          marginTop: 15,
-          marginBottom: 5,
-        }}
-      />
-
-      {errors.email?.map((error, index) => (
-        <Text
-          key={index}
-          style={{
-            color: "#ef4444",
-            fontSize: 12,
-            marginBottom: 3,
-          }}
-        >
-          • {error}
-        </Text>
-      ))}
-
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={{
-          borderWidth: 1,
-          borderColor: errors.password ? "#ef4444" : "#ccc",
-          borderRadius: 8,
-          padding: 12,
-          marginTop: 15,
-          marginBottom: 5,
-        }}
-      />
-
-      {errors.password?.map((error, index) => (
-        <Text
-          key={index}
-          style={{
-            color: "#ef4444",
-            fontSize: 12,
-            marginBottom: 3,
-          }}
-        >
-          • {error}
-        </Text>
-      ))}
-
-      <View style={{ marginTop: 20 }}>
-        <Button title={loading ? "Entering" : "Sign up"} onPress={handleRegister} />
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f8fafc",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+
+  form: {
+    width: "100%",
+  },
+
+  title: {
+    fontSize: 30,
+    fontWeight: "700",
+    color: "#111827",
+    marginBottom: 8,
+  },
+
+  subtitle: {
+    fontSize: 15,
+    color: "#6b7280",
+    marginBottom: 30,
+  },
+
+  inputContainer: {
+    marginBottom: 16,
+  },
+
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#374151",
+    marginBottom: 7,
+  },
+
+  input: {
+    height: 52,
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    borderRadius: 10,
+    backgroundColor: "#ffffff",
+    paddingHorizontal: 15,
+    fontSize: 15,
+    color: "#111827",
+  },
+
+  inputError: {
+    borderColor: "#ef4444",
+  },
+
+  errorText: {
+    color: "#ef4444",
+    fontSize: 12,
+    marginTop: 4,
+  },
+
+  serverError: {
+    color: "#ef4444",
+    fontSize: 13,
+    textAlign: "center",
+    marginBottom: 12,
+  },
+
+  successContainer: {
+    backgroundColor: "#dcfce7",
+    padding: 14,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+
+  successText: {
+    color: "#166534",
+    textAlign: "center",
+    fontWeight: "600",
+  },
+
+  registerButton: {
+    height: 52,
+    backgroundColor: "#2563eb",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 5,
+  },
+
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+
+  registerButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  loginContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 25,
+    gap: 5,
+  },
+
+  loginText: {
+    color: "#6b7280",
+    fontSize: 14,
+  },
+
+  loginLink: {
+    color: "#2563eb",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+});
