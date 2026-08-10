@@ -45,17 +45,17 @@ export default function LoginPage() {
   }
   return (
     <View style={styles.container}>
-      {" "}
+      
       <View style={styles.form}>
-        {" "}
-        <Text style={styles.title}> Welcome back 👋 </Text>{" "}
+        
+        <Text style={styles.title}> Welcome back 👋 </Text>
         <Text style={styles.subtitle}>
-          {" "}
-          Sign in to your account to continue{" "}
-        </Text>{" "}
+          
+          Sign in to your account to continue
+        </Text>
         <View style={styles.inputContainer}>
-          {" "}
-          <Text style={styles.label}> Email </Text>{" "}
+          
+          <Text style={styles.label}> Email </Text>
           <Controller
             control={control}
             name="email"
@@ -72,14 +72,14 @@ export default function LoginPage() {
                 autoCorrect={false}
               />
             )}
-          />{" "}
+          />
           {errors.email && (
             <Text style={styles.error}> {errors.email.message} </Text>
-          )}{" "}
-        </View>{" "}
+          )}
+        </View>
         <View style={styles.inputContainer}>
-          {" "}
-          <Text style={styles.label}> Password </Text>{" "}
+          
+          <Text style={styles.label}> Password </Text>
           <Controller
             control={control}
             name="password"
@@ -94,41 +94,41 @@ export default function LoginPage() {
                 secureTextEntry
               />
             )}
-          />{" "}
+          />
           {errors.password && (
             <Text style={styles.error}> {errors.password.message} </Text>
-          )}{" "}
-        </View>{" "}
+          )}
+        </View>
         {serverError !== "" && (
           <Text style={styles.error}> {serverError} </Text>
-        )}{" "}
+        )}
         <TouchableOpacity
           style={styles.forgotButton}
           onPress={() => console.log("Password recovery")}
         >
-          {" "}
-          <Text style={styles.forgotText}> Forgot your password? </Text>{" "}
-        </TouchableOpacity>{" "}
+          
+          <Text style={styles.forgotText}> Forgot your password? </Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.loginButton, loading && styles.loginButtonDisabled]}
           onPress={handleSubmit(handleLogin)}
           disabled={loading}
         >
-          {" "}
+          
           <Text style={styles.loginButtonText}>
-            {" "}
-            {loading ? "Signing in..." : "Sign in"}{" "}
-          </Text>{" "}
-        </TouchableOpacity>{" "}
+            
+            {loading ? "Signing in..." : "Sign in"}
+          </Text>
+        </TouchableOpacity>
         <View style={styles.registerContainer}>
-          {" "}
-          <Text style={styles.registerText}> Don't have an account? </Text>{" "}
+          
+          <Text style={styles.registerText}> Don't have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-            {" "}
-            <Text style={styles.registerLink}> Create account </Text>{" "}
-          </TouchableOpacity>{" "}
-        </View>{" "}
-      </View>{" "}
+            
+            <Text style={styles.registerLink}> Create account </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 }
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   form: {
     width: "100%",
   maxWidth: 420,
-  alignSelf: "auto",
+  alignSelf: "center",
   },
 
   title: {

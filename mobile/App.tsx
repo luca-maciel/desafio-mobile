@@ -6,14 +6,12 @@ import { AuthProvider } from "./src/context/AuthContext";
 export default function App() {
   return (
     <SafeAreaProvider>
-      {" "}
       <AuthProvider>
-        {" "}
         <NavigationContainer>
-          {" "}
-          <StatusBar style="dark" /> <Routes />{" "}
-        </NavigationContainer>{" "}
-      </AuthProvider>{" "}
+          
+          <StatusBar style="dark" /> <Routes />
+        </NavigationContainer>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }
