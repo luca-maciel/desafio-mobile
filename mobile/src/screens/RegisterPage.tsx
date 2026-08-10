@@ -34,9 +34,9 @@ export default function RegisterPage() {
     setServerError("");
     setLoading(true);
 
-    if (password !== confirmPassword) {
+    if ((password !== confirmPassword) || (password=="") || (confirmPassword=="")) {
       setErrors({
-        confirmPassword: ["Passwords do not match"],
+        confirmPassword: ["Passwords not equals"],
       });
 
       setTimeout(() => {
@@ -48,7 +48,7 @@ export default function RegisterPage() {
 
     try {
       const response = await fetch(
-        "http://192.168.137.178:8080/auth/register",
+        "http://10.0.0.9:8080/auth/register",
         {
           method: "POST",
           headers: {
@@ -93,7 +93,7 @@ export default function RegisterPage() {
       setSuccessMessage(true);
 
       setTimeout(() => {
-        navigation.navigate("login");
+        navigation.navigate("Login");
       }, 3000);
     } catch (error) {
       console.error(
@@ -101,7 +101,8 @@ export default function RegisterPage() {
         error,
         "\nCheck the API IP address",
       );
-
+      setLoading(false)
+      console.log(error);
       setServerError("Unable to connect to the server.");
     } finally {
       setLoading(false);
