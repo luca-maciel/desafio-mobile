@@ -48,7 +48,7 @@ export default function RegisterPage() {
 
     try {
       const response = await fetch(
-        "http://10.0.0.9:8080/auth/register",
+        "http://192.168.137.178/auth/register",
         {
           method: "POST",
           headers: {

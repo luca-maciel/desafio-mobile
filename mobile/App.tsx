@@ -8,8 +8,8 @@ export default function App() {
     <SafeAreaProvider>
       <AuthProvider>
         <NavigationContainer>
-          
-          <StatusBar style="dark" /> <Routes />
+          <StatusBar style="dark" />
+          <Routes />
         </NavigationContainer>
       </AuthProvider>
     </SafeAreaProvider>

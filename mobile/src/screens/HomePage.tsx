@@ -4,42 +4,42 @@ export default function HomePage() {
   const { user, logout } = useAuth();
   return (
     <View style={styles.container}>
-      {" "}
+      
       <View style={styles.header}>
-        {" "}
-        <Text style={styles.greeting}> Welcome back 👋 </Text>{" "}
-        <Text style={styles.name}> {user?.name} </Text>{" "}
-      </View>{" "}
+        
+        <Text style={styles.greeting}> Welcome back 👋 </Text>
+        <Text style={styles.name}> {user?.name} </Text>
+      </View>
       <View style={styles.card}>
-        {" "}
-        <Text style={styles.cardTitle}> Account information </Text>{" "}
+        
+        <Text style={styles.cardTitle}> Account information </Text>
         <View style={styles.info}>
-          {" "}
-          <Text style={styles.label}> Name </Text>{" "}
-          <Text style={styles.value}> {user?.name} </Text>{" "}
-        </View>{" "}
+          
+          <Text style={styles.label}> Name </Text>
+          <Text style={styles.value}> {user?.name} </Text>
+        </View>
         <View style={styles.info}>
-          {" "}
-          <Text style={styles.label}> Email </Text>{" "}
-          <Text style={styles.value}> {user?.email} </Text>{" "}
-        </View>{" "}
-      </View>{" "}
+          
+          <Text style={styles.label}> Email </Text>
+          <Text style={styles.value}> {user?.email} </Text>
+        </View>
+      </View>
       <View style={styles.authCard}>
-        {" "}
-        <Text style={styles.authIcon}> 🔐 </Text>{" "}
+        
+        <Text style={styles.authIcon}> 🔐 </Text>
         <View style={styles.authContent}>
-          {" "}
-          <Text style={styles.authTitle}> You're securely signed in </Text>{" "}
+          
+          <Text style={styles.authTitle}> You're securely signed in </Text>
           <Text style={styles.authDescription}>
-            {" "}
-            Your session is protected with JWT authentication.{" "}
-          </Text>{" "}
-        </View>{" "}
-      </View>{" "}
+            
+            Your session is protected with JWT authentication.
+          </Text>
+        </View>
+      </View>
       <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-        {" "}
-        <Text style={styles.logoutText}> Sign out </Text>{" "}
-      </TouchableOpacity>{" "}
+        
+        <Text style={styles.logoutText}> Sign out </Text>
+      </TouchableOpacity>
     </View>
   );
 }
