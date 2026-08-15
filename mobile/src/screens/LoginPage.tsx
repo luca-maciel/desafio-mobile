@@ -17,8 +17,7 @@ import { RootStackParamList } from "../types/RoutesTypes";
 import { useAuth } from "../context/AuthContext";
 import { loginSchema, LoginFormData } from "../schemas/login.schema";
 
-type NavigationProps =
-  NativeStackNavigationProp<RootStackParamList>;
+type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 export default function LoginPage() {
   const navigation = useNavigation<NavigationProps>();
@@ -67,30 +66,20 @@ export default function LoginPage() {
   return (
     <View style={styles.container}>
       <View style={styles.form}>
+        <Text style={styles.title}>Welcome back 👋</Text>
 
-        <Text style={styles.title}>
-          Welcome back 👋
-        </Text>
-
-        <Text style={styles.subtitle}>
-          Sign in to your account to continue
-        </Text>
+        <Text style={styles.subtitle}>Sign in to your account to continue</Text>
 
         {/* EMAIL */}
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>
-            Email
-          </Text>
+          <Text style={styles.label}>Email</Text>
 
           <Controller
             control={control}
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
-                style={[
-                  styles.input,
-                  errors.email && styles.inputError,
-                ]}
+                style={[styles.input, errors.email && styles.inputError]}
                 placeholder="your@email.com"
                 placeholderTextColor="#9ca3af"
                 value={value}
@@ -104,16 +93,12 @@ export default function LoginPage() {
           />
 
           {errors.email && (
-            <Text style={styles.error}>
-              {errors.email.message}
-            </Text>
+            <Text style={styles.error}>{errors.email.message}</Text>
           )}
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>
-            Password
-          </Text>
+          <Text style={styles.label}>Password</Text>
 
           <Controller
             control={control}
@@ -136,49 +121,33 @@ export default function LoginPage() {
                 />
 
                 <TouchableOpacity
-  style={styles.showPasswordButton}
-  onPress={() =>
-    setShowPassword((previous) => !previous)
-  }
-  activeOpacity={0.7}
->
-  <Ionicons
-    name={showPassword ? "eye-off-outline" : "eye-outline"}
-    size={21}
-    color="#6b7280"
-  />
-</TouchableOpacity>
+                  style={styles.showPasswordButton}
+                  onPress={() => setShowPassword((previous) => !previous)}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    size={21}
+                    color="#6b7280"
+                  />
+                </TouchableOpacity>
               </View>
             )}
           />
 
           {errors.password && (
-            <Text style={styles.error}>
-              {errors.password.message}
-            </Text>
+            <Text style={styles.error}>{errors.password.message}</Text>
           )}
         </View>
 
-        {serverError !== "" && (
-          <Text style={styles.error}>
-            {serverError}
-          </Text>
-        )}
+        {serverError !== "" && <Text style={styles.error}>{serverError}</Text>}
 
-        <TouchableOpacity
-          style={styles.forgotButton}
-          onPress={() => console.log("Password recovery")}
-        >
-          <Text style={styles.forgotText} onPress={()=>{navigation.navigate("ForgotPassword")}}>
-            Forgot your password?
-          </Text>
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+          <Text style={styles.forgotPassword}>Forgot password?</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.loginButton,
-            loading && styles.loginButtonDisabled,
-          ]}
+          style={[styles.loginButton, loading && styles.loginButtonDisabled]}
           onPress={handleSubmit(handleLogin)}
           disabled={loading}
         >
@@ -188,25 +157,25 @@ export default function LoginPage() {
         </TouchableOpacity>
 
         <View style={styles.registerContainer}>
-          <Text style={styles.registerText}>
-            Don't have an account?
-          </Text>
+          <Text style={styles.registerText}>Don't have an account?</Text>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Register")}
-          >
-            <Text style={styles.registerLink}>
-              Create account
-            </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <Text style={styles.registerLink}>Create account</Text>
           </TouchableOpacity>
         </View>
-
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  forgotPassword: {
+    alignSelf: "flex-end",
+    color: "#2563EB",
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: "#f8fafc",

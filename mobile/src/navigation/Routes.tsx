@@ -9,6 +9,8 @@ import ForgotPasswordPage from "../screens/ForgotPasswordPage"
 
 import { RootStackParamList } from "../types/RoutesTypes";
 import { useAuth } from "../context/AuthContext";
+import VerifyCodePage from "../screens/VerifyCodePage";
+import ResetPasswordPage from "../screens/ResetPasswordPage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -45,7 +47,6 @@ export default function Routes() {
         />
       ) : (
         <>
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordPage} />
           
           <Stack.Screen
             name="Login"
@@ -56,6 +57,12 @@ export default function Routes() {
             name="Register"
             component={RegisterPage}
           />
+
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordPage} />
+
+          <Stack.Screen name="VerifyCode" component={VerifyCodePage} />
+
+          <Stack.Screen name="ResetPassword" component={ResetPasswordPage} />
         </>
       )}
     </Stack.Navigator>

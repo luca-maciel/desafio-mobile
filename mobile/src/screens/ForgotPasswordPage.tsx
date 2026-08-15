@@ -4,204 +4,194 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from "react-native";
-
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import axios from "axios";
 
 import { RootStackParamList } from "../types/RoutesTypes";
 
-type NavigationProps =
-  NativeStackNavigationProp<RootStackParamList>;
+type NavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "ForgotPassword"
+>;
+
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 export default function ForgotPasswordPage() {
-  const navigation = useNavigation<NavigationProps>();
+  const navigation = useNavigation<NavigationProp>();
+  const [emailError, setEmailError] = useState("");
 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleSendCode = async () => {
-    console.log("Sending password recovery request...");
+  async function handleForgotPassword() {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  setEmailError("");
+
+  if (!normalizedEmail) {
+    setEmailError("Email is required.");
+    return;
+  }
+
+  if (!isValidEmail(normalizedEmail)) {
+    setEmailError("Please enter a valid email address.");
+    return;
+  }
+
+  try {
     setLoading(true);
 
-    const response = await fetch(
-        "http://172.20.10.2:8080/auth/forgot-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email.trim().toLowerCase(),
-          }),
-        },
-      );
+    await axios.post(
+      "http://192.168.137.178:8080/auth/forgot-password",
+      {
+        email: normalizedEmail,
+      }
+    );
 
-    const data = await response.json();
-    if(!response.ok){
-        console.log("erro ")
-    }
-    console.log(data);
+    navigation.navigate("VerifyCode", {
+      email: normalizedEmail,
+    });
+  } catch (error: any) {
+    console.error(
+      "Forgot password error:",
+      error.response?.data
+    );
+
+    setEmailError(
+      error.response?.data?.error ??
+        "Something went wrong. Please try again."
+    );
+  } finally {
     setLoading(false);
-
-  };
+  }
+}
 
   return (
     <View style={styles.container}>
-      <View style={styles.form}>
+      <View style={styles.content}>
+        <Text style={styles.title}>Forgot Password?</Text>
 
-        <Text style={styles.title}>
-          Forgot your password?
+        <Text style={styles.description}>
+          Enter your email and we'll send you a
+          verification code.
         </Text>
 
-        <Text style={styles.subtitle}>
-          Enter the email associated with your account and we'll
-          help you reset your password.
-        </Text>
+        <Text style={styles.label}>Email</Text>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>
-            Email
-          </Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your email"
+          placeholderTextColor="#999"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
 
-          <TextInput
-            style={[
-              styles.input,
-              error !== "" && styles.inputError,
-            ]}
-            placeholder="your@email.com"
-            placeholderTextColor="#9ca3af"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-
-          {error !== "" && (
-            <Text style={styles.error}>
-              {error}
-            </Text>
-          )}
-        </View>
+        {emailError ? (
+  <Text style={styles.errorText}>
+    {emailError}
+  </Text>
+) : null}
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            loading && styles.buttonDisabled,
-          ]}
-          onPress={handleSendCode}
+          style={styles.button}
+          onPress={handleForgotPassword}
           disabled={loading}
         >
           <Text style={styles.buttonText}>
-            {loading
-              ? "Sending..."
-              : "Send recovery code"}
+            {loading ? "Sending..." : "Send Code"}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.backButton}
           onPress={() => navigation.navigate("Login")}
         >
           <Text style={styles.backText}>
-            ← Back to sign in
+            ← Back to Login
           </Text>
         </TouchableOpacity>
-
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  errorText: {
+  color: "#DC2626",
+  fontSize: 13,
+  marginTop: -12,
+  marginBottom: 16,
+},
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#F8FAFC",
     justifyContent: "center",
     paddingHorizontal: 24,
   },
 
-  form: {
+  content: {
     width: "100%",
-    maxWidth: 420,
-    alignSelf: "center",
   },
 
   title: {
     fontSize: 30,
     fontWeight: "700",
-    color: "#111827",
+    color: "#0F172A",
     marginBottom: 10,
   },
 
-  subtitle: {
+  description: {
     fontSize: 15,
+    color: "#64748B",
     lineHeight: 22,
-    color: "#6b7280",
-    marginBottom: 35,
-  },
-
-  inputContainer: {
-    marginBottom: 20,
+    marginBottom: 30,
   },
 
   label: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#374151",
-    marginBottom: 7,
+    color: "#334155",
+    marginBottom: 8,
   },
 
   input: {
     height: 52,
     borderWidth: 1,
-    borderColor: "#d1d5db",
-    borderRadius: 10,
-    backgroundColor: "#ffffff",
-    paddingHorizontal: 15,
-    fontSize: 15,
-    color: "#111827",
-  },
-
-  inputError: {
-    borderColor: "#dc2626",
-  },
-
-  error: {
-    color: "#dc2626",
-    fontSize: 13,
-    marginTop: 6,
+    borderColor: "#CBD5E1",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    color: "#0F172A",
+    marginBottom: 20,
   },
 
   button: {
     height: 52,
-    backgroundColor: "#2563eb",
-    borderRadius: 10,
+    borderRadius: 12,
+    backgroundColor: "#2563EB",
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  buttonDisabled: {
-    opacity: 0.6,
+    marginBottom: 20,
   },
 
   buttonText: {
-    color: "#ffffff",
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",
   },
 
-  backButton: {
-    alignItems: "center",
-    marginTop: 25,
-  },
-
   backText: {
-    color: "#2563eb",
-    fontSize: 14,
+    textAlign: "center",
+    color: "#2563EB",
+    fontSize: 15,
     fontWeight: "600",
   },
 });
