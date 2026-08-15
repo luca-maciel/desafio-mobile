@@ -9,7 +9,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 
-type FormErrors = {
+export type FormErrors = {
   name?: string[];
   email?: string[];
   password?: string[];

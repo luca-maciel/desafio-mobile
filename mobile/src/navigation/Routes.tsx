@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomePage from "../screens/HomePage";
 import LoginPage from "../screens/LoginPage";
 import RegisterPage from "../screens/RegisterPage";
+import ForgotPasswordPage from "../screens/ForgotPasswordPage"
 
 import { RootStackParamList } from "../types/RoutesTypes";
 import { useAuth } from "../context/AuthContext";
@@ -35,13 +36,17 @@ export default function Routes() {
         title:""
       }}
     >
+
+
       {user ? (
         <Stack.Screen
-          name="Home"
-          component={HomePage}
+        name="Home"
+        component={HomePage}
         />
       ) : (
         <>
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordPage} />
+          
           <Stack.Screen
             name="Login"
             component={LoginPage}

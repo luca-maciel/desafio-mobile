@@ -169,7 +169,7 @@ export default function LoginPage() {
           style={styles.forgotButton}
           onPress={() => console.log("Password recovery")}
         >
-          <Text style={styles.forgotText}>
+          <Text style={styles.forgotText} onPress={()=>{navigation.navigate("ForgotPassword")}}>
             Forgot your password?
           </Text>
         </TouchableOpacity>
